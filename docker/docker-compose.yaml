@@ -1,0 +1,79 @@
+version: "3.8"
+# GRAFANA     http://localhost:3000/login
+# PROMETHEUS  http://localhost:9090/graph
+# ZIPKING     http://localhost:9411/zipkin/
+
+networks:
+  grafana_prometheus_network:
+    name: grafana_prometheus_network
+    driver: bridge
+
+volumes:
+  prometheus_data: {}
+  grafana_data: {}
+
+services:
+  grafana:
+    image: grafana/grafana:7.0.4
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    networks:
+      - grafana_prometheus_network
+    volumes:
+      - grafana_data:/var/lib/grafana:rw
+      - ./grafana/custom.ini:/etc/grafana/custom.ini:ro
+      - ./grafana/provisioning/:/etc/grafana/provisioning/
+    environment:
+      - GF_PATHS_CONFIG=/etc/grafana/custom.ini
+    restart: always
+    depends_on:
+      - prometheus
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "10"
+  prometheus:
+    container_name: prometheus
+    image: prom/prometheus:v2.19.0
+    ports:
+      - 9090:9090
+    restart: always
+    networks:
+      - grafana_prometheus_network
+    volumes:
+      - ./prometheus/:/etc/prometheus/
+      - prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.route-prefix=/'
+      - '--web.console.libraries=/usr/share/prometheus/console_libraries'
+      - '--web.console.templates=/usr/share/prometheus/consoles'
+      - '--storage.tsdb.retention.time=24h'
+      - '--web.enable-admin-api'
+      - '--web.enable-lifecycle'
+  zipkin:
+    image: openzipkin/zipkin-slim
+    container_name: zipkin
+    # Environment settings are defined here https://github.com/openzipkin/zipkin/blob/master/zipkin-server/README.md#environment-variables
+    environment:
+      - STORAGE_TYPE=mem
+      # Uncomment to enable self-tracing
+      # - SELF_TRACING_ENABLED=true
+      # Uncomment to enable debug logging
+      # - JAVA_OPTS=-Dorg.slf4j.simpleLogger.log.zipkin2=debug
+    ports:
+      # Port used for the Zipkin UI and HTTP Api
+      - 9411:9411
+    depends_on:
+      - storage
+
+  # Fake services allow us to compose with docker-compose-elasticsearch.yml
+  # BusyBox is pinned to prevent repetitive image pulls for no-op services
+  storage:
+    image: busybox:1.31.0
+    container_name: fake_storage
+
+
