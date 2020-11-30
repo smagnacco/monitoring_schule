@@ -6,30 +6,39 @@ import akka.http.scaladsl.model.StatusCodes
 import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.Route
 import akka.util.Timeout
+import com.typesafe.scalalogging.StrictLogging
 import die.schule.api.Definition.{Alarm, Alarms}
 import die.schule.ensemble.AlarmActor
 import die.schule.ensemble.AlarmActor.{CommandResponse, CreateAlarm, DeleteAlarm, GetAlarm, GetAlarmResponse, GetAlarms}
 import die.schule.json.JsonFormats
+import kamon.instrumentation.akka.http.TracingDirectives
 
 import scala.concurrent.Future
 
 class Routes(alarmActor: ActorRef[AlarmActor.Command], appName: String)(implicit val system: ActorSystem[_])
-  extends JsonFormats {
+  extends JsonFormats with StrictLogging with TracingDirectives {
   import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport._
 
   private implicit val timeout = Timeout.create(system.settings.config.getDuration(s"$appName.routes.request-timeout"))
 
-  def getAlarms(): Future[Alarms] =
+  def getAlarms(): Future[Alarms] = {
+    logger.info("get alarms!")
     alarmActor.ask(GetAlarms)
-
-  def getAlarm(id: String): Future[GetAlarmResponse] =
+  }
+  def getAlarm(id: String): Future[GetAlarmResponse] = {
+    logger.info(s"get alarm by $id")
     alarmActor.ask(GetAlarm(id, _))
+  }
 
-  def createAlarm(Alarm: Alarm): Future[CommandResponse] =
-    alarmActor.ask(CreateAlarm(Alarm, _))
+  def createAlarm(alarm: Alarm): Future[CommandResponse] = {
+    logger.info(s"create alarm $alarm")
+    alarmActor.ask(CreateAlarm(alarm, _))
+  }
 
-  def deleteAlarm(id: String): Future[CommandResponse] =
+  def deleteAlarm(id: String): Future[CommandResponse] = {
+    logger.info(s"delete alarm $id")
     alarmActor.ask(DeleteAlarm(id, _))
+  }
 
   val alarmRoutes: Route =
     pathPrefix("alarms") {
