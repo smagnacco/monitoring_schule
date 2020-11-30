@@ -22,7 +22,12 @@ lazy val root = (project in file(".")).
       "io.kamon" %% "kamon-zipkin" % kamonVersion,
       "io.kamon" %% "kamon-annotation" % kamonVersion,
       "io.kamon" %% "kamon-status-page" % kamonVersion,
+      "io.kamon" %% "kamon-akka-http" % kamonVersion,
+      "io.kamon" %% "kamon-executors" % kamonVersion,
+      "io.kamon" %% "kamon-logback" % kamonVersion,
+
       "io.kamon" % "kanela-agent" % "1.0.7" % "agent",
+
 
       "com.typesafe.akka" %% "akka-http-testkit"        % akkaHttpVersion % Test,
       "com.typesafe.akka" %% "akka-actor-testkit-typed" % akkaVersion     % Test,
