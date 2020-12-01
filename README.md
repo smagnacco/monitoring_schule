@@ -1,11 +1,15 @@
 # monitoring_schule
 ##Preconditions: 
-<b>Install docker and docker-compose</b>
-<b>Install apache bench</b>
-<b>Download Kanela Agent jar</b>
+
+<b>Install [docker](https://docs.docker.com/engine/install/) and [docker-compose](https://docs.docker.com/compose/install/)</b>
+
+<b>Install [apache bench](https://httpd.apache.org/docs/2.4/programs/ab.html)</b>
+
+<b>Download [Kanela Agent jar](https://mvnrepository.com/artifact/io.kamon/kanela-agent)</b>
+
 
 ## Objective
-Simple http server for alarm toy project in order to play with monitoring
+Experiment with monitoring using KGPZ (Kamon Grafana Prometheus Zipkin) 
 
 ### Run
 Use Kanela Agent in order to run with Kamon Instrumentation
@@ -24,15 +28,14 @@ DELETE http://localhost:9290/alarms?id=someId
 
 ### Stress test
 post file using:
-
-<code>
+```bash
 ab -p scripts/alarm.json -T application/json -c 4 -n 100000000 http://localhost:9290/alarms
-</code>
+```
 
 get:
-
-<code>
-ab -p scripts/alarm.json -T application/json -c 4 -n 100000000 http://localhost:9290/alarms</code>
+```bash
+ab -p scripts/alarm.json -T application/json -c 4 -n 100000000 http://localhost:9290/alarms
+```
 
 ## Monitoring
 
@@ -53,3 +56,11 @@ Kamon JVM id: 8808
 
 #### ZIPKING     
 http://localhost:9411/zipkin/
+
+
+### Directory Orgaqnization
+### Docker directory
+The docker directory contains grafana, prometheus and zipking configuration out of the box. Those will work in memory, no data will be stored, there is a fake store e.g. Inside grafana directory, you will find dashboards directory, that's the place you will keep a copy of your finished dashboards in order to track dashboard changes. 
+
+### Scripts
+Scripts will contain testing utilities
