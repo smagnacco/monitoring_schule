@@ -64,9 +64,6 @@ Prometheus Graph http://0.0.0.0:9090/graph
 #### GRAFANA
 http://localhost:3000/login
 
-Use import dashboard for:
-Kamon JVM id: 8808
-
 
 #### ZIPKING     
 http://localhost:9411/zipkin/
