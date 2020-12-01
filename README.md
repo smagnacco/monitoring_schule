@@ -58,7 +58,7 @@ Kamon JVM id: 8808
 http://localhost:9411/zipkin/
 
 
-### Directory Orgaqnization
+## Directory Orgaqnization
 ### Docker directory
 The docker directory contains grafana, prometheus and zipking configuration out of the box. Those will work in memory, no data will be stored, there is a fake store e.g. Inside grafana directory, you will find dashboards directory, that's the place you will keep a copy of your finished dashboards in order to track dashboard changes. 
 
