@@ -6,14 +6,13 @@ those who listen."
 ```
 
 <div align="center">
-    <img src="https://media.giphy.com/media/XAaRqeePpXw6Jy9Irs/giphy.gif" alt="Found @ Giphy by @todprod" width="200">
+    <img src="https://media.giphy.com/media/l1Uq4o4v6K3HShcIBy/giphy.gif" alt="Found @ Giphy by @tonybabel" width="200">
     <br>
     <h1>Monitoring Schule</h1>
     <sub>Built with ❤︎ </sub>
 </div>
 
 
-# monitoring_schule
 ##Preconditions: 
 
 <b>Install [docker](https://docs.docker.com/engine/install/) and [docker-compose](https://docs.docker.com/compose/install/)</b>
