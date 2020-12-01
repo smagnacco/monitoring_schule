@@ -23,7 +23,16 @@ POST http://localhost:9290/alarms entity={'id':'someId'}
 DELETE http://localhost:9290/alarms?id=someId
 
 ### Stress test
+post file using:
 
+<code>
+ab -p scripts/alarm.json -T application/json -c 4 -n 100000000 http://localhost:9290/alarms
+</code>
+
+get:
+
+<code>
+ab -p scripts/alarm.json -T application/json -c 4 -n 100000000 http://localhost:9290/alarms</code>
 
 ## Monitoring
 
