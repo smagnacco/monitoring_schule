@@ -1,10 +1,17 @@
 # monitoring_schule
 ##Preconditions: 
-<b>Install docker and docker-compose</B>
-<b>Install apache bench</B>
+<b>Install docker and docker-compose</b>
+<b>Install apache bench</b>
+<b>Download Kanela Agent jar</b>
 
 ## Objective
 Simple http server for alarm toy project in order to play with monitoring
+
+### Run
+Use Kanela Agent in order to run with Kamon Instrumentation
+-javaagent:/${KANELA_JAR_PATH}/kanela-agent-1.0.7.jar
+
+e.g.:-javaagent:/home/smagnacco/Downloads/kanela-agent-1.0.7.jar
 
 ###URLS
 GET http://localhost:9290/alarms
