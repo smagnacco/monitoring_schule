@@ -1,3 +1,18 @@
+```
+"The earth has music for
+those who listen."
+
+– William Shakespeare
+```
+
+<div align="center">
+    <img src="https://media.giphy.com/media/XAaRqeePpXw6Jy9Irs/giphy.gif" alt="Found @ Giphy by @todprod" width="200">
+    <br>
+    <h1>Monitoring Schule</h1>
+    <sub>Built with ❤︎ </sub>
+</div>
+
+
 # monitoring_schule
 ##Preconditions: 
 
