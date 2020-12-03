@@ -81,3 +81,30 @@ The docker directory contains grafana, prometheus and zipking configuration out 
 
 ### Scripts
 Scripts will contain testing utilities
+
+### Monitoring
+jconsole pid will show you in real time cpu and mem of the pid process. With jconsole you can generate a full GC and watch a pause in your app in realtime.
+
+Another way to watch heap size is using jmap, however, jmap -histo causes a full GC in order to collect information.
+```jmap -histo pid | head 40```
+
+If you need to monitor which threads are running
+```jstack pid```
+
+## Utilities
+```htop -p pid ``` where pid is your main java app, will help you to filter mem, cpu, for the given process (without noise of other process running in the system)
+```vmstat 1 s``` r = running queue, pay attention to this number, those are tasks executing and waiting for CPU. If exceeds the number of CPUs on the server you have a bottleneck. [More Info](http://www.dba-oracle.com/t_tuning_vmstat.htm)
+```bash
+procs -----------memory---------- ---swap-- -----io---- -system-- ------cpu-----
+ r  b   swpd   free   buff  cache   si   so    bi    bo   in   cs us sy id wa st
+ 4  0  12032 536184 340180 4577316    0    0     0     0 13497 217487 55 20 25  0  0
+ 6  0  12032 533880 340188 4576128    0    0     0   188 13245 275146 54 18 28  0  0
+ 8  0  12032 533080 340212 4574920    0    0     0   136 12666 250987 56 17 27  0  0
+ 3  0  12032 531528 340212 4575276    0    0     0  1132 13172 211505 57 18 24  0  0
+ 5  0  12032 529356 340212 4574264    0    0     0    12 13960 163596 62 18 20  0  0
+ 3  0  12032 526016 340212 4575392    0    0     0     0 14159 206802 55 20 25  0  0
+ 7  0  12032 523132 340212 4575376    0    0     0    12 13394 174712 59 20 21  0  0
+ 4  0  12032 521672 340236 4574884    0    0     0   140 14588 198946 56 20 24  0  0
+11  0  12032 514564 340252 4575612    0    0     0  8964 13985 170783 60 18 22  0  0
+```
+

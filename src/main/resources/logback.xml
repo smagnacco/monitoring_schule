@@ -15,6 +15,7 @@
         <neverBlock>true</neverBlock>
         <appender-ref ref="STDOUT" />
     </appender>
+
     <appender name="COUNTER" class="kamon.instrumentation.logback.tools.EntriesCounterAppender"/>
 
     <root level="INFO">
