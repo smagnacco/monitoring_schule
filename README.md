@@ -25,11 +25,17 @@ those who listen."
 ## Objective
 Experiment with monitoring using KGPZ (Kamon Grafana Prometheus Zipkin) 
 
-### Run
+### Run using SBT
 Use Kanela Agent in order to run with Kamon Instrumentation
--javaagent:/${KANELA_JAR_PATH}/kanela-agent-1.0.7.jar
 
-e.g.:-javaagent:/home/smagnacco/Downloads/kanela-agent-1.0.7.jar
+```-javaagent:/${KANELA_JAR_PATH}/kanela-agent-1.0.7.jar```
+
+```bash
+sbt run -J-javaagent:/${KANELA_JAR_PATH}/kanela-agent-1.0.7.jar
+```
+```bash
+sbt run -J-javaagent:/home/smagnacco/Downloads/kanela-agent-1.0.7.jar
+```
 
 ###URLS
 GET http://localhost:9290/alarms

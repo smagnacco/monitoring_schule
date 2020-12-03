@@ -1,3 +1,5 @@
+fork := true
+
 lazy val akkaHttpVersion = "10.2.1"
 lazy val akkaVersion     = "2.6.10"
 lazy val kamonVersion    = "2.1.9"
