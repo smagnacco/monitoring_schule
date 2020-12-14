@@ -108,3 +108,5 @@ procs -----------memory---------- ---swap-- -----io---- -system-- ------cpu-----
 11  0  12032 514564 340252 4575612    0    0     0  8964 13985 170783 60 18 22  0  0
 ```
 
+```bash
+top | grep `jps | grep MonitorAlarmApp | cut -d ' ' -f 1` ```

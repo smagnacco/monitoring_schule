@@ -50,7 +50,7 @@ class Routes(alarmActor: ActorRef[AlarmActor.Command], appName: String)(implicit
             },
             post {
               entity(as[Alarm]) { Alarm =>
-                onSuccess(createAlarm(Alarm)) { performed =>
+                onSuccess(  createAlarm(Alarm)  ) { performed =>
                   complete((StatusCodes.Created, performed))
                 }
               }

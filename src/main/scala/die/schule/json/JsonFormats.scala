@@ -7,7 +7,7 @@ import spray.json.DefaultJsonProtocol
 trait JsonFormats  {
   import DefaultJsonProtocol._
 
-  implicit val AlarmJsonFormat = jsonFormat1(Alarm)
+  implicit val AlarmJsonFormat = jsonFormat2(Alarm)
   implicit val AlarmsJsonFormat = jsonFormat1(Alarms)
 
   implicit val CommandResponseJsonFormat = jsonFormat1(CommandResponse)
