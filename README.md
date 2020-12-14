@@ -54,7 +54,7 @@ ab -p scripts/alarm.json -T application/json -c 4 -n 100000000 http://localhost:
 
 get:
 ```bash
-ab -p scripts/alarm.json -T application/json -c 4 -n 100000000 http://localhost:9290/alarms
+ab -T application/json -c 4 -n 100000000 http://localhost:9290/alarms
 ```
 
 ## Monitoring
