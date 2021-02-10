@@ -13,7 +13,7 @@ those who listen."
 </div>
 
 
-##Preconditions: 
+## Preconditions: 
 
 <b>Install [docker](https://docs.docker.com/engine/install/) and [docker-compose](https://docs.docker.com/compose/install/)</b>
 
@@ -24,6 +24,11 @@ those who listen."
 
 ## Objective
 Experiment with monitoring using KGPZ (Kamon Grafana Prometheus Zipkin) 
+
+## First start docker
+```bash 
+docker/startup
+```
 
 ### Run using SBT
 Use Kanela Agent in order to run with Kamon Instrumentation
@@ -37,7 +42,7 @@ sbt run -J-javaagent:/${KANELA_JAR_PATH}/kanela-agent-1.0.7.jar
 sbt run -J-javaagent:/home/smagnacco/Downloads/kanela-agent-1.0.7.jar
 ```
 
-###URLS
+### URLS
 GET http://localhost:9290/alarms
 
 GET http://localhost:9290/alarms?id=someId
