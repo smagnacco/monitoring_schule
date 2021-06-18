@@ -27,7 +27,7 @@ Experiment with monitoring using KGPZ (Kamon Grafana Prometheus Zipkin)
 
 ## First start docker
 ```bash 
-docker/startup
+cd docker; ./startup; cd ..
 ```
 
 ### Run using SBT
