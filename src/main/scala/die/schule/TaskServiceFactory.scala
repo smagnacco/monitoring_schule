@@ -6,7 +6,6 @@ import com.typesafe.config.Config
 
 object TaskServiceFactory {
 
-
   def createFixedSizeThreadPool(config: Config, sleepTime: Int, capacity: Int): TaskService = {
     val fixedTPEConfig = config.getConfig("monitor-alarm.fixed-thread-pool")
     val corePoolSize = fixedTPEConfig.getInt("cores")

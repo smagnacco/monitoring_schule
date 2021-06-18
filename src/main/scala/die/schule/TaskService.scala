@@ -28,6 +28,8 @@ class TaskService(threadPoolExecutor: ThreadPoolExecutor, sleepTime: Int) {
 }
 
 object TaskService {
-  def apply(threadPoolExecutor: ThreadPoolExecutor, sleepTime: Int) =
+  def apply(threadPoolExecutor: ThreadPoolExecutor, sleepTime: Int): TaskService = {
+    ThreadPoolManager.addTpe(threadPoolExecutor)
     new TaskService(threadPoolExecutor, sleepTime)
+  }
 }

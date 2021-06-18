@@ -1,5 +1,7 @@
 package die.schule
 
+import java.util.concurrent.ThreadPoolExecutor
+
 import akka.actor.typed.ActorSystem
 import com.typesafe.config.ConfigFactory
 import com.typesafe.scalalogging.StrictLogging
@@ -20,9 +22,16 @@ object MonitorAlarmApp extends App with StrictLogging {
   def shutdownHook(value: ActorSystem[Nothing]): Unit = {
     sys.addShutdownHook {
       logger.info("Shutdown actorSystem")
+      ThreadPoolManager.shutdown()
       system.terminate()
       logger.info("shutdown Kamon shutdown")
       Kamon.stopModules()
     }
   }
+}
+
+object ThreadPoolManager {
+  var tpes: List[ThreadPoolExecutor] = Nil
+  def addTpe(tpe: ThreadPoolExecutor) = tpes = tpe :: tpes
+  def shutdown() = tpes.foreach(_.shutdown())
 }
