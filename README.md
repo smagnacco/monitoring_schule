@@ -91,10 +91,15 @@ Scripts will contain testing utilities
 jconsole pid will show you in real time cpu and mem of the pid process. With jconsole you can generate a full GC and watch a pause in your app in realtime.
 
 Another way to watch heap size is using jmap, however, jmap -histo causes a full GC in order to collect information.
+
 ```jmap -histo pid | head 40```
 
+e.g```jmap -histo:live `jps | grep MonitorAlarmApp | cut -d " " -f 1` | head```
+
 If you need to monitor which threads are running
+
 ```jstack pid```
+```jstack `jps | grep MonitorAlarmApp | cut -d " " -f 1` ```
 
 ## Utilities
 ```htop -p pid ``` where pid is your main java app, will help you to filter mem, cpu, for the given process (without noise of other process running in the system)
