@@ -15,7 +15,7 @@ import kamon.instrumentation.akka.http.TracingDirectives
 
 import scala.concurrent.Future
 
-class Routes(alarmActor: ActorRef[AlarmActor.Command], appName: String)(implicit val system: ActorSystem[_])
+class AlarmRoutes(alarmActor: ActorRef[AlarmActor.Command], appName: String)(implicit val system: ActorSystem[_])
   extends JsonFormats with StrictLogging with TracingDirectives {
   import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport._
 
@@ -39,8 +39,7 @@ class Routes(alarmActor: ActorRef[AlarmActor.Command], appName: String)(implicit
     logger.info(s"delete alarm $id")
     alarmActor.ask(DeleteAlarm(id, _))
   }
-
-  val alarmRoutes: Route =
+  val route: Route =
     pathPrefix("alarms") {
       concat(
         pathEnd {
@@ -72,4 +71,5 @@ class Routes(alarmActor: ActorRef[AlarmActor.Command], appName: String)(implicit
             })
         })
     }
+
 }

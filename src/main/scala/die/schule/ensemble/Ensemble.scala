@@ -2,16 +2,17 @@ package die.schule.ensemble
 
 import akka.actor.typed.scaladsl.{ActorContext, Behaviors}
 import akka.actor.typed.{ActorRef, ActorSystem, Behavior}
-import die.schule.{AlarmHttpServerFactory, Routes}
+import akka.http.scaladsl.server.{Route, RouteConcatenation}
+import die.schule.{AlarmHttpServerFactory, AlarmRoutes, TaskService, TasksRoutes}
 
 object Ensemble {
   val appName =  "monitor-alarm"
 
   private var maybeSystem: Option[ActorSystem[Nothing]] = None
 
-  def getActorSystem(): ActorSystem[Nothing] = {
+  def getActorSystem(taskService: TaskService): ActorSystem[Nothing] = {
     if (maybeSystem.isEmpty) {
-      val sys = createActorSystem()
+      val sys = createActorSystem(taskService)
       maybeSystem = Some(sys)
       sys
     } else {
@@ -19,22 +20,23 @@ object Ensemble {
     }
   }
 
-  private def createActorSystem(): ActorSystem[Nothing] = {
+  private def createActorSystem(taskService: TaskService): ActorSystem[Nothing] = {
     val rootBehavior: Behavior[Nothing] = Behaviors.setup[Nothing] { context =>
-      AlarmActorFactory.createAlarmActor(appName, context)
+      RoutesFactory.createHttpServer(appName, context, taskService)
     }
     ActorSystem[Nothing](rootBehavior, "MonitorAkkaHttpServer")
   }
 }
 
-object AlarmActorFactory {
-  def createAlarmActor(appName: String, context: ActorContext[Nothing]): Behavior[Nothing] = {
+object RoutesFactory {
+  def createHttpServer(appName: String, context: ActorContext[Nothing], taskService: TaskService): Behavior[Nothing] = {
     val alarmActor: ActorRef[AlarmActor.Command] = context.spawn(AlarmActor(), "alarmActor")
     context.watch(alarmActor)
 
-    val routes = new Routes(alarmActor, appName)(context.system)
-
-    new AlarmHttpServerFactory().createHttpSever(routes.alarmRoutes)(context.system)
+    val alarmRoutes = new AlarmRoutes(alarmActor, appName)(context.system)
+    val taskRoutes = new TasksRoutes(taskService)
+    val routes: Route = RouteConcatenation.concat(taskRoutes.route,  alarmRoutes.route)
+    new AlarmHttpServerFactory().createHttpSever(routes)(context.system)
 
     Behaviors.empty
   }

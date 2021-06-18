@@ -1,3 +1,4 @@
+
 fork := true
 
 javaOptions++=Seq("-Xms3096M","-Xmx3096M","-XX:+UnlockExperimentalVMOptions","-XX:+UseZGC")
@@ -38,3 +39,5 @@ lazy val root = (project in file(".")).
       "org.scalatest"     %% "scalatest"                % "3.0.8"         % Test
     )
   )
+
+enablePlugins(JmhPlugin)

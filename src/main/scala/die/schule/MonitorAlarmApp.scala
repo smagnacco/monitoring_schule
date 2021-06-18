@@ -13,7 +13,7 @@ object MonitorAlarmApp extends App with StrictLogging {
   logger.info("Kamon initialized correctly")
   logger.info(s"Starting Application ${Ensemble.appName}")
 
-  val system = Ensemble.getActorSystem()
+  val system = Ensemble.getActorSystem(TaskServiceFactory.build(config))
 
   shutdownHook(system)
 
