@@ -2,11 +2,9 @@ package die.schule.ensemble
 
 import java.time.LocalDateTime
 
-import akka.actor.typed.{ActorRef, Behavior}
 import akka.actor.typed.scaladsl.Behaviors
+import akka.actor.typed.{ActorRef, Behavior}
 import die.schule.api.Definition.{Alarm, Alarms}
-
-import scala.util.Random
 
 object AlarmActor {
   // actor protocol

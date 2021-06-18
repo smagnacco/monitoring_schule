@@ -15,13 +15,15 @@ class TaskService(threadPoolExecutor: ThreadPoolExecutor, sleepTime: Int) {
     }
 
     def getThreads(): String = {
-      s"""Thread:
+      val text = s"""Thread:
          | - Active Count: ${threadPoolExecutor.getActiveCount}
          | - Task Completed: ${threadPoolExecutor.getCompletedTaskCount} / Task Count: ${threadPoolExecutor.getTaskCount}
          | - Thread Pool size: ${threadPoolExecutor.getPoolSize} - largest: ${threadPoolExecutor.getLargestPoolSize} - max: ${threadPoolExecutor.getMaximumPoolSize}
          | - Task Queue  size: ${threadPoolExecutor.getQueue}
          | - Core Pool size: ${threadPoolExecutor.getCorePoolSize}
          |""".stripMargin
+
+      text.replace("\n", ",")
     }
 }
 
