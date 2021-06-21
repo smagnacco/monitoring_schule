@@ -6,8 +6,9 @@ import akka.actor.typed.scaladsl.Behaviors
 import akka.actor.typed.{ActorRef, Behavior}
 import die.schule.api.Definition.{Alarm, Alarms}
 import die.schule.service.SomeService
+import die.schule.util.KamonSpanHelper
 
-object AlarmActor {
+object AlarmActor extends KamonSpanHelper {
   // actor protocol
   sealed trait Command
   final case class GetAlarms(replyTo: ActorRef[Alarms]) extends Command
@@ -23,21 +24,28 @@ object AlarmActor {
   private def performActionOn(domainAlarms: List[DomainAlarm], alarmsById: Map[String, Alarm], nextId: Int, someService: SomeService): Behavior[Command] =
     Behaviors.receiveMessage {
       case GetAlarms(replyTo) =>
-        val alarms = domainAlarms.map(domainAlarm => Alarm(domainAlarm.id))
-        replyTo ! Alarms(someService.doSomethingMore(alarms))
+        val alarms = trace("get-all-alarms", {
+          domainAlarms.map(domainAlarm => Alarm(domainAlarm.id))
+        })
+        val processedAlarms = someService.doSomethingMore(alarms)
+        replyTo ! Alarms(processedAlarms)
         Behaviors.same
 
       case CreateAlarm(alarm, replyTo) =>
         replyTo ! CommandResponse(s"Alarm ${alarm.id} created.")
-        val domainAlarm = alarm match {
-          case Alarm(id, None) => DomainAlarm(id)
-          case Alarm(id, Some(bytes) ) => DomainAlarm(id = id, bytesPayload = ArrayFiller.createRandomArrayOf(bytes))
-        }
+        val domainAlarm = trace("create-alarm", {
+          alarm match {
+            case Alarm(_, None) => DomainAlarm(nextId.toString)
+            case Alarm(_, Some(bytes) ) => DomainAlarm(id = nextId.toString,
+              bytesPayload = ArrayFiller.createRandomArrayOf(bytes))
+          }
+        })
         performActionOn(domainAlarm :: domainAlarms, alarmsById.updated(nextId.toString, alarm), nextId + 1, someService)
 
       case GetAlarm(id, replyTo) =>
-        val maybeAlarm = alarmsById.get(id)
-        replyTo ! GetAlarmResponse(maybeAlarm.map(someService.doSomething(_)))
+        val maybeAlarm = trace("get-alarm-by-id", alarmsById.get(id) )
+        val maybeProcessedAlarm = trace("calling-service", maybeAlarm.map(someService.doSomething(_)))
+        replyTo ! GetAlarmResponse(maybeProcessedAlarm)
         Behaviors.same
 
       case DeleteAlarm(id, replyTo) =>

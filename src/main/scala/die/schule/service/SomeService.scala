@@ -1,14 +1,21 @@
 package die.schule.service
 
-import die.schule.api.Definition.{Alarm, Alarms}
+import die.schule.api.Definition.Alarm
+import die.schule.util.KamonSpanHelper
 
-class SomeService(transformer: SomeTransformer) {
+class SomeService(transformer: SomeTransformer) extends KamonSpanHelper {
   def doSomething(alarm: Alarm): Alarm = {
-    transformer.transform(alarm)
+    trace("service-process-one-alarm", {
+      Thread.sleep(10)
+      transformer.transform(alarm)
+    })
   }
+
   def doSomethingMore(alarms: List[Alarm]): List[Alarm] = {
-    Thread.sleep(200)
-    alarms.map(doSomething(_))
+    trace("service-process-alarms", {
+      Thread.sleep(20)
+      alarms.map(doSomething(_))
+    })
   }
 }
 
@@ -16,10 +23,12 @@ object SomeService {
   def apply(transformer: SomeTransformer): SomeService = new SomeService(transformer)
 }
 
-class SomeTransformer {
+class SomeTransformer extends KamonSpanHelper {
   def transform(alarm: Alarm): Alarm = {
-    Thread.sleep(100)
-    alarm
+    trace("transform-alarm", {
+      Thread.sleep(15)
+      alarm
+    })
   }
 }
 
@@ -30,3 +39,5 @@ object SomeTransformer {
 object SomeServiceBuilder {
   def apply(): SomeService = SomeService(SomeTransformer())
 }
+
+
