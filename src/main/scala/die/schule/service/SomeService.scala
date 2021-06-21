@@ -27,6 +27,6 @@ object SomeTransformer {
   def apply(): SomeTransformer = new SomeTransformer()
 }
 
-object Builder {
+object SomeServiceBuilder {
   def apply(): SomeService = SomeService(SomeTransformer())
 }

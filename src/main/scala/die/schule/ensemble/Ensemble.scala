@@ -3,6 +3,7 @@ package die.schule.ensemble
 import akka.actor.typed.scaladsl.{ActorContext, Behaviors}
 import akka.actor.typed.{ActorRef, ActorSystem, Behavior}
 import akka.http.scaladsl.server.{Route, RouteConcatenation}
+import die.schule.service.{SomeService, SomeServiceBuilder}
 import die.schule.{AlarmHttpServerFactory, AlarmRoutes, TaskService, TasksRoutes}
 
 object Ensemble {
@@ -22,15 +23,16 @@ object Ensemble {
 
   private def createActorSystem(taskService: TaskService): ActorSystem[Nothing] = {
     val rootBehavior: Behavior[Nothing] = Behaviors.setup[Nothing] { context =>
-      RoutesFactory.createHttpServer(appName, context, taskService)
+      RoutesFactory.createHttpServer(appName, context, taskService, SomeServiceBuilder())
     }
     ActorSystem[Nothing](rootBehavior, "MonitorAkkaHttpServer")
   }
 }
 
 object RoutesFactory {
-  def createHttpServer(appName: String, context: ActorContext[Nothing], taskService: TaskService): Behavior[Nothing] = {
-    val alarmActor: ActorRef[AlarmActor.Command] = context.spawn(AlarmActor(), "alarmActor")
+  def createHttpServer(appName: String, context: ActorContext[Nothing],
+                       taskService: TaskService, someService: SomeService): Behavior[Nothing] = {
+    val alarmActor: ActorRef[AlarmActor.Command] = context.spawn(AlarmActor(someService), "alarmActor")
     context.watch(alarmActor)
 
     val alarmRoutes = new AlarmRoutes(alarmActor, appName)(context.system)
