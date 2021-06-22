@@ -11,7 +11,7 @@ import die.schule.util.KamonSpanHelper
 object AlarmActor extends KamonSpanHelper {
   // actor protocol
   sealed trait Command
-  final case class GetAlarms(replyTo: ActorRef[Alarms]) extends Command
+  final case class GetAlarms(isParallel: Boolean = false, replyTo: ActorRef[Alarms]) extends Command
   final case class CreateAlarm(Alarm: Alarm, replyTo: ActorRef[CommandResponse]) extends Command
   final case class GetAlarm(id: String, replyTo: ActorRef[GetAlarmResponse]) extends Command
   final case class DeleteAlarm(id: String, replyTo: ActorRef[CommandResponse]) extends Command
@@ -23,11 +23,11 @@ object AlarmActor extends KamonSpanHelper {
 
   private def performActionOn(domainAlarms: List[DomainAlarm], alarmsById: Map[String, Alarm], nextId: Int, someService: SomeService): Behavior[Command] =
     Behaviors.receiveMessage {
-      case GetAlarms(replyTo) =>
+      case GetAlarms(isParallel, replyTo) =>
         val alarms = trace("get-all-alarms", {
           domainAlarms.map(domainAlarm => Alarm(domainAlarm.id))
         })
-        val processedAlarms = someService.doSomethingMore(alarms)
+        val processedAlarms = someService.doSomethingMore(alarms, isParallel)
         replyTo ! Alarms(processedAlarms)
         Behaviors.same
 

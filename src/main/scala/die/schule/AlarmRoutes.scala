@@ -3,8 +3,10 @@ package die.schule
 import akka.actor.typed.scaladsl.AskPattern._
 import akka.actor.typed.{ActorRef, ActorSystem}
 import akka.http.scaladsl.model.StatusCodes
+import akka.http.scaladsl.model.headers.RawHeader
 import akka.http.scaladsl.server.Directives._
-import akka.http.scaladsl.server.Route
+import akka.http.scaladsl.server.{Directive, Directive0, Directive1, Directives, RequestContext, Route}
+import akka.http.scaladsl.unmarshalling.FromRequestUnmarshaller
 import akka.util.Timeout
 import com.typesafe.scalalogging.StrictLogging
 import die.schule.api.Definition.{Alarm, Alarms}
@@ -21,10 +23,13 @@ class AlarmRoutes(alarmActor: ActorRef[AlarmActor.Command], appName: String)(imp
 
   private implicit val timeout = Timeout.create(system.settings.config.getDuration(s"$appName.routes.request-timeout"))
 
-  def getAlarms(): Future[Alarms] = {
+  def getAlarms(isParallel: Boolean): Future[Alarms] = {
     logger.info("get alarms!")
-    alarmActor.ask(GetAlarms)
+    alarmActor.ask {
+      replyTo: ActorRef[Alarms] => GetAlarms(isParallel, replyTo)
+    }
   }
+
   def getAlarm(id: String): Future[GetAlarmResponse] = {
     logger.info(s"get alarm by $id")
     alarmActor.ask(GetAlarm(id, _))
@@ -45,7 +50,9 @@ class AlarmRoutes(alarmActor: ActorRef[AlarmActor.Command], appName: String)(imp
         pathEnd {
           concat(
             get {
-              complete(getAlarms())
+              parameterMap { params =>
+                complete(getAlarms(params.contains("par")))
+              }
             },
             post {
               entity(as[Alarm]) { Alarm =>

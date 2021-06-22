@@ -13,10 +13,24 @@ class SomeService(transformer: SomeTransformer) extends KamonSpanHelper {
     })
   }
 
-  def doSomethingMore(alarms: List[Alarm]): List[Alarm] = {
+  def doSomethingInParallel(alarms: List[Alarm]): List[Alarm] = {
     trace("service-process-alarms", {
       Thread.sleep(20)
       alarms.par.map(doSomething(_)).toList
+    })
+  }
+
+  def doSomethingMore(alarms: List[Alarm], isParallel: Boolean): List[Alarm] = {
+    if (isParallel)
+      doSomethingInParallel(alarms)
+    else
+      doSomethingMore(alarms)
+  }
+
+  def doSomethingMore(alarms: List[Alarm]): List[Alarm] = {
+    trace("service-process-alarms", {
+      Thread.sleep(20)
+      alarms.map(doSomething(_)).toList
     })
   }
 }
