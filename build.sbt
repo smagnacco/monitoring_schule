@@ -1,7 +1,7 @@
 
 fork := true
 
-javaOptions++=Seq()
+javaOptions++=Seq("-Xms3096M","-Xmx3096M","-XX:+UnlockExperimentalVMOptions","-XX:+UseZGC")
 
 lazy val akkaHttpVersion = "10.2.1"
 lazy val akkaVersion     = "2.6.10"
@@ -33,7 +33,7 @@ lazy val root = (project in file(".")).
 
       "io.kamon" % "kanela-agent" % "1.0.7" % "agent",
 
-
+      "org.scala-lang.modules" %% "scala-parallel-collections" % "1.0.3",
       "com.typesafe.akka" %% "akka-http-testkit"        % akkaHttpVersion % Test,
       "com.typesafe.akka" %% "akka-actor-testkit-typed" % akkaVersion     % Test,
       "org.scalatest"     %% "scalatest"                % "3.0.8"         % Test

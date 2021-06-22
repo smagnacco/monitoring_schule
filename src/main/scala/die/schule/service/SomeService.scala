@@ -2,6 +2,8 @@ package die.schule.service
 
 import die.schule.api.Definition.Alarm
 import die.schule.util.KamonSpanHelper
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.collection.parallel.CollectionConverters._
 
 class SomeService(transformer: SomeTransformer) extends KamonSpanHelper {
   def doSomething(alarm: Alarm): Alarm = {
@@ -14,7 +16,7 @@ class SomeService(transformer: SomeTransformer) extends KamonSpanHelper {
   def doSomethingMore(alarms: List[Alarm]): List[Alarm] = {
     trace("service-process-alarms", {
       Thread.sleep(20)
-      alarms.map(doSomething(_))
+      alarms.par.map(doSomething(_)).toList
     })
   }
 }
