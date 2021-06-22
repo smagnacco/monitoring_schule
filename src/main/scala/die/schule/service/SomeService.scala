@@ -1,23 +1,27 @@
 package die.schule.service
 
 import die.schule.api.Definition.Alarm
-import die.schule.util.KamonSpanHelper
-import scala.concurrent.ExecutionContext.Implicits.global
-import scala.collection.parallel.CollectionConverters._
+import kamon.Kamon
 
-class SomeService(transformer: SomeTransformer) extends KamonSpanHelper {
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.{Await, Future}
+import scala.concurrent.duration._
+
+class SomeService(transformer: SomeTransformer) {
   def doSomething(alarm: Alarm): Alarm = {
-    trace("service-process-one-alarm", {
+    Kamon.span("service-process-one-alarm"){
       Thread.sleep(10)
       transformer.transform(alarm)
-    })
+    }
   }
 
   def doSomethingInParallel(alarms: List[Alarm]): List[Alarm] = {
-    trace("service-process-alarms", {
+    Kamon.span("service-process-alarms"){
       Thread.sleep(20)
-      alarms.par.map(doSomething(_)).toList
-    })
+      val doSomethingF: List[Future[Alarm]] = alarms.map(alarm => Future{doSomething(alarm)})
+
+      Await.result(Future.sequence(doSomethingF), 1 seconds)
+    }
   }
 
   def doSomethingMore(alarms: List[Alarm], isParallel: Boolean): List[Alarm] = {
@@ -28,10 +32,10 @@ class SomeService(transformer: SomeTransformer) extends KamonSpanHelper {
   }
 
   def doSomethingMore(alarms: List[Alarm]): List[Alarm] = {
-    trace("service-process-alarms", {
+    Kamon.span("service-process-alarms"){
       Thread.sleep(20)
       alarms.map(doSomething(_)).toList
-    })
+    }
   }
 }
 
@@ -39,12 +43,12 @@ object SomeService {
   def apply(transformer: SomeTransformer): SomeService = new SomeService(transformer)
 }
 
-class SomeTransformer extends KamonSpanHelper {
+class SomeTransformer {
   def transform(alarm: Alarm): Alarm = {
-    trace("transform-alarm", {
+    Kamon.span("transform-alarm") {
       Thread.sleep(15)
       alarm
-    })
+    }
   }
 }
 

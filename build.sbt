@@ -5,7 +5,7 @@ javaOptions++=Seq("-Xms3096M","-Xmx3096M","-XX:+UnlockExperimentalVMOptions","-X
 
 lazy val akkaHttpVersion = "10.2.1"
 lazy val akkaVersion     = "2.6.10"
-lazy val kamonVersion    = "2.1.9"
+lazy val kamonVersion    = "2.2.1"
 
 lazy val root = (project in file(".")).
   settings(
@@ -14,6 +14,12 @@ lazy val root = (project in file(".")).
       scalaVersion    := "2.13.3"
     )),
     name := "monitor",
+    scalacOptions ++= Seq(
+      "-feature",
+      "-language:postfixOps",
+      "-deprecation",
+      "-Ywarn-unused"
+    ),
     libraryDependencies ++= Seq(
       "com.typesafe.scala-logging" %% "scala-logging" % "3.9.2",
       "com.typesafe.akka" %% "akka-http"                % akkaHttpVersion,
@@ -31,9 +37,8 @@ lazy val root = (project in file(".")).
       "io.kamon" %% "kamon-executors" % kamonVersion,
       "io.kamon" %% "kamon-logback" % kamonVersion,
 
-      "io.kamon" % "kanela-agent" % "1.0.7" % "agent",
+      "io.kamon" % "kanela-agent" % "1.0.11" % "agent",
 
-      "org.scala-lang.modules" %% "scala-parallel-collections" % "1.0.3",
       "com.typesafe.akka" %% "akka-http-testkit"        % akkaHttpVersion % Test,
       "com.typesafe.akka" %% "akka-actor-testkit-typed" % akkaVersion     % Test,
       "org.scalatest"     %% "scalatest"                % "3.0.8"         % Test
