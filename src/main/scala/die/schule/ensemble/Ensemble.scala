@@ -4,7 +4,7 @@ import akka.actor.typed.scaladsl.{ActorContext, Behaviors}
 import akka.actor.typed.{ActorRef, ActorSystem, Behavior}
 import akka.http.scaladsl.server.{Route, RouteConcatenation}
 import die.schule.service.{SomeService, SomeServiceBuilder}
-import die.schule.{AlarmHttpServerFactory, AlarmRoutes, TaskService, TasksRoutes}
+import die.schule.{AlarmHttpServerFactory, AlarmRoutes, PostRoute, TaskService, TasksRoutes}
 
 object Ensemble {
   val appName =  "monitor-alarm"
@@ -35,9 +35,11 @@ object RoutesFactory {
     val alarmActor: ActorRef[AlarmActor.Command] = context.spawn(AlarmActor(someService), "alarmActor")
     context.watch(alarmActor)
 
+    implicit val as = context.system.classicSystem
     val alarmRoutes = new AlarmRoutes(alarmActor, appName)(context.system)
     val taskRoutes = new TasksRoutes(taskService)
-    val routes: Route = RouteConcatenation.concat(taskRoutes.route,  alarmRoutes.route)
+    val postRoute = new PostRoute()
+    val routes: Route = RouteConcatenation.concat(taskRoutes.route,  alarmRoutes.route, postRoute.route)
     new AlarmHttpServerFactory().createHttpSever(routes)(context.system)
 
     Behaviors.empty
