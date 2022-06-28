@@ -1,7 +1,7 @@
 
 fork := true
 
-javaOptions++=Seq("-Xms3096M","-Xmx3096M","-XX:+UnlockExperimentalVMOptions","-XX:+UseZGC")
+javaOptions++=Seq("-Xms3096M","-Xmx3096M","-XX:+UnlockExperimentalVMOptions","-XX:+UseShenandoahGC")
 
 lazy val akkaHttpVersion = "10.2.1"
 lazy val akkaVersion     = "2.6.10"

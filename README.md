@@ -39,7 +39,7 @@ Use Kanela Agent in order to run with Kamon Instrumentation
 sbt run -J-javaagent:/${KANELA_JAR_PATH}/kanela-agent-1.0.7.jar
 ```
 ```bash
-sbt run -J-javaagent:/home/smagnacco/Downloads/kanela-agent-1.0.7.jar
+sbt run -J-javaagent:/home/SergioMagnacco/Downloads/kanela-agent-1.0.7.jar
 ```
 
 ### URLS
